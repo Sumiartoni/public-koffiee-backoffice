@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-[#020617] text-slate-100 antialiased;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+}
+
+/* Custom UI Protocol Classes */
+.input-pro {
+    @apply w-full bg-slate-950 border border-slate-800 rounded-3xl p-6 text-white font-bold focus:ring-4 ring-sky-500/20 transition-all outline-none;
+}
+
+.label-pro {
+    @apply text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-6;
+}
+
+.input-auth {
+    @apply w-full bg-slate-950/80 border border-slate-800 rounded-[2.5rem] p-6 text-white font-bold focus:ring-4 ring-sky-500/20 transition-all outline-none placeholder-slate-700;
+}
+
+.custom-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 rounded-full hover:bg-slate-700;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.animate-premium {
+    animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Auth Backdrop Pulse */
+.bg-glow-hub {
+    background: radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.05) 0%, transparent 70%);
+}
