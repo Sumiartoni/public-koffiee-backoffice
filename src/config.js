@@ -1,6 +1,6 @@
 // API Configuration - Vercel Ready
-export const API_URL = import.meta.env.VITE_API_URL || 'https://illegal-jacinta-mkrrn-d8f0167d.koyeb.app/api';
-export const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://illegal-jacinta-mkrrn-d8f0167d.koyeb.app';
+export const API_URL = import.meta.env.VITE_API_URL || 'https://api.pkpos.my.id/api';
+export const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://api.pkpos.my.id';
 
 // App Configuration
 export const SHOP_NAME = 'Public Koffiee';
