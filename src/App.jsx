@@ -507,9 +507,11 @@ function ProcessingView({ orders, onUpdate, onDelete, loading }) {
                                 </td>
                                 <td className="p-12 text-center">
                                     <span className={`px-6 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] border shadow-lg ${o.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
-                                        o.status === 'cancelled' ? 'bg-red-500/10 border-red-500/30 text-red-500' :
-                                            'bg-orange-500/10 border-orange-500/30 text-orange-500'}`}>
-                                        {o.status === 'pending' ? 'MENUNGGU' : o.status === 'completed' ? 'SELESAI' : 'BATAL'}
+                                            o.status === 'cancelled' ? 'bg-rose-500/10 border-rose-500/30 text-rose-500' :
+                                                o.status === 'unpaid' ? 'bg-slate-500/10 border-slate-500/30 text-slate-400' :
+                                                    'bg-orange-500/10 border-orange-500/30 text-orange-500'
+                                        }`}>
+                                        {o.status === 'unpaid' ? 'BELUM BAYAR' : o.status === 'pending' ? 'MENUNGGU' : o.status === 'completed' ? 'SELESAI' : 'BATAL'}
                                     </span>
                                 </td>
                                 <td className="p-12 text-right">

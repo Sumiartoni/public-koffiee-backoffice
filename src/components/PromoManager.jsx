@@ -9,17 +9,8 @@ export default function PromoManager() {
     const [promos, setPromos] = useState([]);
     const [discounts, setDiscounts] = useState([]);
     const [menuItems, setMenuItems] = useState([]);
-    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modal, setModal] = useState(null); // { type: 'promo'|'discount', mode: 'add'|'edit', data: {} }
-
-    // Helper to format date for input[type="date"]
-    const formatDateForInput = (dateStr) => {
-        if (!dateStr) return '';
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return '';
-        return d.toISOString().split('T')[0];
-    };
 
     useEffect(() => {
         fetchData();
@@ -28,16 +19,14 @@ export default function PromoManager() {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [pRes, dRes, mRes, cRes] = await Promise.all([
+            const [pRes, dRes, mRes] = await Promise.all([
                 promoAPI.getPromotions(),
                 promoAPI.getDiscounts(),
-                menuAPI.getAdminAll(),
-                menuAPI.getCategories()
+                menuAPI.getAdminAll()
             ]);
             setPromos(pRes.data.promotions);
             setDiscounts(dRes.data.discounts);
             setMenuItems(mRes.data.items);
-            setCategories(cRes.data.categories);
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
     };
@@ -112,12 +101,6 @@ export default function PromoManager() {
                                     <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Syarat</span>
                                     <span className="text-xs font-bold text-slate-200">Min. {p.min_purchase > 0 ? formatCurrency(p.min_purchase) : 'Tanpa Syarat'}</span>
                                 </div>
-                                {p.category_name && (
-                                    <div className="bg-orange-500/5 p-4 rounded-xl border border-orange-500/10 flex justify-between items-center group/item">
-                                        <span className="text-[10px] font-black text-orange-500/60 uppercase tracking-widest text-[8px]">Hanya Kategori</span>
-                                        <span className="text-xs font-bold text-orange-400 italic">{p.category_name}</span>
-                                    </div>
-                                )}
                                 {p.type === 'buy_x_get_y' && (
                                     <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 group/item hover:border-orange-500/30 transition-colors">
                                         <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Benefit</p>
@@ -127,7 +110,7 @@ export default function PromoManager() {
                             </div>
 
                             <div className="mt-8 pt-8 border-t border-slate-800 flex justify-between items-center">
-                                <div className="flex items-center gap-2 text-slate-500 font-black text-[9px] uppercase tracking-widest"><Calendar size={12} /> {formatDateForInput(p.end_date) || 'Selamanya'}</div>
+                                <div className="flex items-center gap-2 text-slate-500 font-black text-[9px] uppercase tracking-widest"><Calendar size={12} /> {p.end_date || 'Selamanya'}</div>
                                 <div className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest border ${p.is_active ? 'border-emerald-500/30 text-emerald-500 bg-emerald-500/5' : 'border-red-500/30 text-red-500 bg-red-500/5'}`}>{p.is_active ? 'AKTIF' : 'NONAKTIF'}</div>
                             </div>
                         </div>
@@ -148,16 +131,10 @@ export default function PromoManager() {
                                     <p className="text-3xl font-black text-white italic">{d.type === 'percentage' ? `${d.value}%` : formatCurrency(d.value)}</p>
                                     <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mt-2">NILAI DISKON</p>
                                 </div>
-                                {d.category_name && (
-                                    <div className="mt-4 bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/10 flex justify-between items-center">
-                                        <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest text-[8px]">Hanya Kategori</span>
-                                        <span className="text-xs font-bold text-emerald-400 italic">{d.category_name}</span>
-                                    </div>
-                                )}
                             </div>
 
                             <div className="mt-8 pt-8 border-t border-slate-800 flex justify-between items-center">
-                                <div className="flex items-center gap-2 text-slate-500 font-black text-[9px] uppercase tracking-widest"><Calendar size={12} /> {formatDateForInput(d.end_date) || 'Selamanya'}</div>
+                                <div className="flex items-center gap-2 text-slate-500 font-black text-[9px] uppercase tracking-widest"><Calendar size={12} /> {d.end_date || 'Selamanya'}</div>
                                 <div className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest border ${d.is_active ? 'border-emerald-500/30 text-emerald-500 bg-emerald-500/5' : 'border-red-500/30 text-red-500 bg-red-500/5'}`}>{d.is_active ? 'AKTIF' : 'NONAKTIF'}</div>
                             </div>
                         </div>
@@ -199,13 +176,6 @@ export default function PromoManager() {
                                             </select>
                                         </div>
                                     )}
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Kategori Produk (Opsional)</label>
-                                        <select name="category_id" defaultValue={modal.data.category_id} className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-xs font-bold focus:border-orange-500 outline-none appearance-none cursor-pointer">
-                                            <option value="">Semua Kategori</option>
-                                            {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                                        </select>
-                                    </div>
                                 </div>
 
                                 {modal.type === 'promo' && (
@@ -266,11 +236,11 @@ export default function PromoManager() {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Mulai Berlaku</label>
-                                        <input type="date" name="start_date" defaultValue={formatDateForInput(modal.data.start_date)} className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-[10px] font-bold outline-none" />
+                                        <input type="date" name="start_date" defaultValue={modal.data.start_date} className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-[10px] font-bold outline-none" />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Hingga</label>
-                                        <input type="date" name="end_date" defaultValue={formatDateForInput(modal.data.end_date)} className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-[10px] font-bold outline-none" />
+                                        <input type="date" name="end_date" defaultValue={modal.data.end_date} className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-[10px] font-bold outline-none" />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Status</label>
