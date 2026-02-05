@@ -58,6 +58,15 @@ export default function PromoManager() {
         } catch (e) { alert('Gagal menyimpan'); }
     };
 
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        try {
+            return new Date(dateString).toISOString().split('T')[0];
+        } catch (e) {
+            return '';
+        }
+    };
+
     return (
         <div className="space-y-10 animate-premium">
             <header className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 bg-slate-950/40 p-10 rounded-[3rem] border border-slate-800/60 shadow-2xl">
@@ -236,11 +245,23 @@ export default function PromoManager() {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Mulai Berlaku</label>
-                                        <input type="date" name="start_date" defaultValue={modal.data.start_date} className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-[10px] font-bold outline-none" />
+                                        <input
+                                            type="date"
+                                            name="start_date"
+                                            defaultValue={formatDate(modal.data.start_date)}
+                                            onClick={(e) => e.target.showPicker()}
+                                            className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-[10px] font-bold outline-none cursor-pointer"
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Hingga</label>
-                                        <input type="date" name="end_date" defaultValue={modal.data.end_date} className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-[10px] font-bold outline-none" />
+                                        <input
+                                            type="date"
+                                            name="end_date"
+                                            defaultValue={formatDate(modal.data.end_date)}
+                                            onClick={(e) => e.target.showPicker()}
+                                            className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-[10px] font-bold outline-none cursor-pointer"
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Status</label>
