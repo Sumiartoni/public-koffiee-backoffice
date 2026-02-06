@@ -354,7 +354,7 @@ function MobileDownloadView() {
                             </p>
                         </div>
 
-                        <a href={`${window.location.origin}/downloads/CoffeePOS-v1.apk`} target="_blank" download className="inline-flex items-center gap-4 bg-indigo-600 px-10 py-6 rounded-3xl hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-900/40 group/btn">
+                        <a href={`${window.location.origin}/downloads/KoffieePOS-v1.0.1.apk`} target="_blank" download className="inline-flex items-center gap-4 bg-indigo-600 px-10 py-6 rounded-3xl hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-900/40 group/btn">
                             <Download className="text-white group-hover/btn:scale-110 transition-transform" />
                             <div className="text-left">
                                 <p className="text-[9px] font-black text-indigo-200 uppercase tracking-widest">Download .APK</p>
@@ -507,9 +507,9 @@ function ProcessingView({ orders, onUpdate, onDelete, loading }) {
                                 </td>
                                 <td className="p-12 text-center">
                                     <span className={`px-6 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] border shadow-lg ${o.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
-                                            o.status === 'cancelled' ? 'bg-rose-500/10 border-rose-500/30 text-rose-500' :
-                                                o.status === 'unpaid' ? 'bg-slate-500/10 border-slate-500/30 text-slate-400' :
-                                                    'bg-orange-500/10 border-orange-500/30 text-orange-500'
+                                        o.status === 'cancelled' ? 'bg-rose-500/10 border-rose-500/30 text-rose-500' :
+                                            o.status === 'unpaid' ? 'bg-slate-500/10 border-slate-500/30 text-slate-400' :
+                                                'bg-orange-500/10 border-orange-500/30 text-orange-500'
                                         }`}>
                                         {o.status === 'unpaid' ? 'BELUM BAYAR' : o.status === 'pending' ? 'MENUNGGU' : o.status === 'completed' ? 'SELESAI' : 'BATAL'}
                                     </span>
