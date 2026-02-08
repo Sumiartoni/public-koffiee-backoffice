@@ -492,11 +492,23 @@ function ProcessingView({ orders, onUpdate, onDelete, loading }) {
                                         </p>
                                     )}
                                     <div className="mt-3 space-y-1 border-t border-slate-800/50 pt-3">
-                                        {o.items?.map((it, idx) => (
-                                            <p key={idx} className="text-[10px] text-slate-400 font-medium">
-                                                <span className="text-amber-500/70 font-black">×{it.quantity}</span> {it.menu_item_name}
-                                            </p>
-                                        ))}
+                                        {o.items?.map((it, idx) => {
+                                            let extras = [];
+                                            try {
+                                                extras = typeof it.extras === 'string' ? JSON.parse(it.extras) : (it.extras || []);
+                                            } catch (e) { extras = []; }
+
+                                            return (
+                                                <div key={idx} className="mb-1">
+                                                    <p className="text-[10px] text-slate-400 font-medium">
+                                                        <span className="text-amber-500/70 font-black">×{it.quantity}</span> {it.menu_item_name}
+                                                    </p>
+                                                    {extras.length > 0 && (
+                                                        <p className="text-[9px] text-slate-600 pl-4">+ {extras.map(e => e.name).join(', ')}</p>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </td>
                                 <td className="p-12">
