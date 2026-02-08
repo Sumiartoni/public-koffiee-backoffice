@@ -495,7 +495,8 @@ function ProcessingView({ orders, onUpdate, onDelete, loading }) {
                                         {o.items?.map((it, idx) => {
                                             let extras = [];
                                             try {
-                                                extras = typeof it.extras === 'string' ? JSON.parse(it.extras) : (it.extras || []);
+                                                const parsed = typeof it.extras === 'string' ? JSON.parse(it.extras) : (it.extras || []);
+                                                extras = Array.isArray(parsed) ? parsed : [];
                                             } catch (e) { extras = []; }
 
                                             return (
