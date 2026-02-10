@@ -17,7 +17,7 @@ export default function ReferralManager() {
         setLoading(true);
         try {
             const res = await axios.get(`${API_URL}/referrals/stats`);
-            setStats(res.data);
+            setStats(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
             console.error(error);
         } finally {
@@ -28,7 +28,7 @@ export default function ReferralManager() {
     const handleViewDetails = async (userId) => {
         try {
             const res = await axios.get(`${API_URL}/referrals/${userId}/details`);
-            setUserDetails(res.data);
+            setUserDetails(Array.isArray(res.data) ? res.data : []);
             setSelectedUser(userId);
         } catch (error) {
             console.error(error);

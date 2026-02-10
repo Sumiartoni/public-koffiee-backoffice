@@ -41,7 +41,7 @@ export default function CustomerVouchersManager() {
         setLoading(true);
         try {
             const res = await voucherAPI.getAll();
-            setVouchers(res.data);
+            setVouchers(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
             console.error(error);
             alert('Gagal mengambil data voucher');
@@ -124,7 +124,7 @@ export default function CustomerVouchersManager() {
     };
 
     // Filtered List
-    const filteredVouchers = vouchers.filter(v => v.category === activeTab);
+    const filteredVouchers = Array.isArray(vouchers) ? vouchers.filter(v => v.category === activeTab) : [];
 
     return (
         <div className="space-y-8 animate-premium">
