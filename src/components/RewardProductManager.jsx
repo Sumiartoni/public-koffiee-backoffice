@@ -4,7 +4,7 @@ import { Gift, Plus, Trash2, Edit3, X, Loader, Award, Star, Users, Package, Togg
 import { rewardAPI, menuAPI } from '../api';
 import { formatCurrency } from '../config';
 
-export default function RewardProductManager() {
+export default function RewardProductManager({ menu }) {
     const [rewards, setRewards] = useState([]);
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function RewardProductManager() {
         try {
             const [rRes, mRes] = await Promise.all([
                 rewardAPI.getAll(),
-                menuAPI.getAdminAll()
+                menu ? Promise.resolve({ data: { items: menu } }) : menuAPI.getAdminAll()
             ]);
             setRewards(rRes.data);
             setMenuItems(mRes.data.items || []);
