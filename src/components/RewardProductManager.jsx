@@ -18,11 +18,13 @@ export default function RewardProductManager() {
         try {
             const [rRes, mRes] = await Promise.all([
                 rewardAPI.getAll(),
-                menuAPI.getAdminAll().catch(() => ({ data: { items: [] } }))
+                rewardAPI.getMenuItems().catch(() => ({ data: { items: [] } }))
             ]);
             setRewards(rRes.data);
-            const items = mRes.data.items || [];
-            console.log('Menu Items Loaded:', items.length);
+            // Public API returns { items: [...] } usually, containing filtered available items
+            // But user wants this list specifically.
+            const items = mRes.data.items || mRes.data || [];
+            console.log('External Menu Items Loaded:', items.length);
             setMenuItems(items);
         } catch (e) { console.error(e); }
         finally { setLoading(false); }

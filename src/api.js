@@ -171,7 +171,8 @@ export const rewardAPI = {
     update: (id, data) => api.put(`/rewards/${id}`, data),
     delete: (id) => api.delete(`/rewards/${id}`),
     toggle: (id) => api.patch(`/rewards/${id}/toggle`),
-    getMenuItems: () => api.get('/menu/admin/all') // for product dropdown
+    // Direct fetch from production API as requested by user
+    getMenuItems: () => axios.get('https://api.pkpos.my.id/api/menu')
 };
 
 // =============================================
