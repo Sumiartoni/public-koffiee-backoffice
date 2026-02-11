@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Plus, Trash2, Edit3, X, Loader, Award, Star, Users, Package, ToggleLeft, ToggleRight, Check } from 'lucide-react';
-import { rewardAPI } from '../api';
+import { rewardAPI, menuAPI } from '../api';
 import { formatCurrency } from '../config';
 
 export default function RewardProductManager() {
@@ -18,10 +18,10 @@ export default function RewardProductManager() {
         try {
             const [rRes, mRes] = await Promise.all([
                 rewardAPI.getAll(),
-                rewardAPI.getMenuItems()
+                menuAPI.getAdminAll()
             ]);
             setRewards(rRes.data);
-            setMenuItems(mRes.data.items || mRes.data || []);
+            setMenuItems(mRes.data.items || []);
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
     };
@@ -221,6 +221,9 @@ export default function RewardProductManager() {
                                                 </button>
                                             );
                                         })}
+                                        {menuItems.length === 0 && (
+                                            <p className="text-[10px] text-slate-500 text-center py-4 italic">Tidak ada produk ditemukan di database.</p>
+                                        )}
                                     </div>
                                 </div>
 
