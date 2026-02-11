@@ -330,7 +330,7 @@ export default function UltimateBackoffice() {
                         {view === 'promos' && <PromoManager />}
                         {view === 'new-user-voucher' && <NewUserVoucherManager />}
                         {view === 'customer-vouchers' && <CustomerVouchersManager />}
-                        {view === 'rewards' && <RewardProductManager menu={fullMenu} />}
+                        {view === 'rewards' && <RewardProductManager />}
                         {view === 'banners' && <BannerManager />}
                         {view === 'notifications' && <NotificationManager />}
                         {view === 'extras' && <ExtrasManager menu={fullMenu} />}
