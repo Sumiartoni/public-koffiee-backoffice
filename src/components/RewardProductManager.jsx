@@ -4,37 +4,46 @@ import { Gift, Plus, Trash2, Edit3, X, Loader, Award, Star, Users, Package, Togg
 import { rewardAPI, menuAPI } from '../api';
 import { formatCurrency } from '../config';
 
-export default function RewardProductManager() {
+export default function RewardProductManager({ menu }) {
     const [rewards, setRewards] = useState([]);
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modal, setModal] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState([]);
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    // Sync menu from props when it becomes available
+    useEffect(() => {
+        if (menu && menu.length > 0) {
+            setMenuItems(menu);
+        }
+    }, [menu]);
 
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [rRes, mRes] = await Promise.all([
-                rewardAPI.getAll(),
-                rewardAPI.getMenuItems().catch(() => ({ data: { items: [] } }))
+            const [rRes] = await Promise.all([
+                rewardAPI.getAll()
             ]);
             setRewards(rRes.data);
-            setRewards(rRes.data);
 
-            // Robust parsing for unknown API structure
-            let items = [];
-            if (Array.isArray(mRes.data)) {
-                items = mRes.data;
-            } else if (mRes.data && Array.isArray(mRes.data.items)) {
-                items = mRes.data.items;
-            } else if (mRes.data && Array.isArray(mRes.data.data)) {
-                items = mRes.data.data;
+            // Initial load fallback if prop is empty (though prop update will override)
+            if (!menu || menu.length === 0) {
+                // Try external API as backup
+                try {
+                    const mRes = await rewardAPI.getMenuItems();
+                    let items = [];
+                    if (Array.isArray(mRes.data)) items = mRes.data;
+                    else if (mRes.data?.items) items = mRes.data.items;
+                    else if (mRes.data?.data) items = mRes.data.data;
+                    if (items.length > 0) setMenuItems(items);
+                } catch (err) { console.warn("Backup fetch failed", err); }
+            } else {
+                setMenuItems(menu);
             }
-
-            console.log('External Menu Items Parsed:', items.length);
-            setMenuItems(items);
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
     };
