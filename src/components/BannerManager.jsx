@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Image, Plus, Trash2, Edit3, X, Loader, ToggleLeft, ToggleRight, ExternalLink, ArrowUp, ArrowDown } from 'lucide-react';
 import { bannerAPI, menuAPI } from '../api';
-import { API_URL } from '../config';
-
-const BASE_URL = API_URL.replace('/api', '');
 
 export default function BannerManager() {
     const [banners, setBanners] = useState([]);
@@ -112,7 +109,7 @@ export default function BannerManager() {
                             {/* Image Preview */}
                             <div className="w-48 h-24 rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden flex-shrink-0">
                                 {b.image_url ? (
-                                    <img src={`${BASE_URL}${b.image_url}`} alt={b.title} className="w-full h-full object-cover" />
+                                    <img src={b.image_url} alt={b.title} className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-slate-700"><Image size={32} /></div>
                                 )}
@@ -138,7 +135,7 @@ export default function BannerManager() {
                                 <button onClick={() => handleToggle(b.id)} className={`p-3 rounded-xl transition-all ${b.is_active ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-800 text-slate-500'}`}>
                                     {b.is_active ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
                                 </button>
-                                <button onClick={() => { setModal({ mode: 'edit', data: b }); setPreview(b.image_url ? `${BASE_URL}${b.image_url}` : null); }} className="p-3 bg-slate-800 hover:bg-orange-600 rounded-xl text-slate-300 hover:text-white transition-all"><Edit3 size={14} /></button>
+                                <button onClick={() => { setModal({ mode: 'edit', data: b }); setPreview(b.image_url || null); }} className="p-3 bg-slate-800 hover:bg-orange-600 rounded-xl text-slate-300 hover:text-white transition-all"><Edit3 size={14} /></button>
                                 <button onClick={() => handleDelete(b.id)} className="p-3 bg-slate-800 hover:bg-red-600 rounded-xl text-slate-300 hover:text-white transition-all"><Trash2 size={14} /></button>
                             </div>
                         </div>
