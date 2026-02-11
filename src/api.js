@@ -197,3 +197,12 @@ export const bannerAPI = {
     toggle: (id) => api.patch(`/banners/${id}/toggle`)
 };
 
+// =============================================
+// NOTIFICATION API
+// =============================================
+export const notificationAPI = {
+    getAll: () => api.get('/notifications/admin'),
+    create: (data) => api.post('/notifications', data),
+    delete: (id) => api.delete(`/notifications/${id}`)
+};
+
