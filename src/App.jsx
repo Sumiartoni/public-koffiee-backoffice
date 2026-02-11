@@ -16,7 +16,7 @@ import ExpenseManager from './components/ExpenseManager';
 import PromoManager from './components/PromoManager';
 import ExtrasManager from './components/ExtrasManager';
 import RewardProductManager from './components/RewardProductManager';
-// import CustomerVouchersManager from './components/CustomerVouchersManager';
+import CustomerVouchersManager from './components/CustomerVouchersManager';
 // import ReferralManager from './components/ReferralManager';
 import { SOCKET_URL } from './config';
 
@@ -214,6 +214,7 @@ export default function UltimateBackoffice() {
                     <NavItem icon={<Layers size={20} />} label="Varian Extra" active={view === 'extras'} onClick={() => { setView('extras'); setSidebarOpen(false); }} />
 
                     <div className="px-6 py-2 mt-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">LOYALTY PROGRAM</div>
+                    <NavItem icon={<Tag size={20} />} label="Voucher Pelanggan" active={view === 'customer-vouchers'} onClick={() => { setView('customer-vouchers'); setSidebarOpen(false); }} />
                     <NavItem icon={<Package size={20} />} label="Reward Produk" active={view === 'rewards'} onClick={() => { setView('rewards'); setSidebarOpen(false); }} />
 
                     <NavItem icon={<Gift size={20} />} label="Promo & Diskon" active={view === 'promos'} onClick={() => { setView('promos'); setSidebarOpen(false); }} />
@@ -321,6 +322,7 @@ export default function UltimateBackoffice() {
                         {view === 'hpp' && <HPPManager />}
                         {view === 'expenses' && <ExpenseManager />}
                         {view === 'promos' && <PromoManager />}
+                        {view === 'customer-vouchers' && <CustomerVouchersManager />}
                         {view === 'rewards' && <RewardProductManager />}
                         {view === 'extras' && <ExtrasManager menu={fullMenu} />}
                         {view === 'reports' && <AdvancedReportingView adv={advancedReport} brk={breakdownData} brkType={breakdownType} setBrkType={setBreakdownType} customers={customers} variants={variants} range={reportRange} setRange={setReportRange} onRefresh={refreshGlobalData} />}
