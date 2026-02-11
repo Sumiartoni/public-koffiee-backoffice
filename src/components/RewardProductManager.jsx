@@ -21,10 +21,19 @@ export default function RewardProductManager() {
                 rewardAPI.getMenuItems().catch(() => ({ data: { items: [] } }))
             ]);
             setRewards(rRes.data);
-            // Public API returns { items: [...] } usually, containing filtered available items
-            // But user wants this list specifically.
-            const items = mRes.data.items || mRes.data || [];
-            console.log('External Menu Items Loaded:', items.length);
+            setRewards(rRes.data);
+
+            // Robust parsing for unknown API structure
+            let items = [];
+            if (Array.isArray(mRes.data)) {
+                items = mRes.data;
+            } else if (mRes.data && Array.isArray(mRes.data.items)) {
+                items = mRes.data.items;
+            } else if (mRes.data && Array.isArray(mRes.data.data)) {
+                items = mRes.data.data;
+            }
+
+            console.log('External Menu Items Parsed:', items.length);
             setMenuItems(items);
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
