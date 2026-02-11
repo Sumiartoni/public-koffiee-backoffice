@@ -161,3 +161,16 @@ export const extraAPI = {
 };
 
 export default api;
+
+// =============================================
+// REWARD PRODUCT API
+// =============================================
+export const rewardAPI = {
+    getAll: () => api.get('/rewards'),
+    create: (data) => api.post('/rewards', data),
+    update: (id, data) => api.put(`/rewards/${id}`, data),
+    delete: (id) => api.delete(`/rewards/${id}`),
+    toggle: (id) => api.patch(`/rewards/${id}/toggle`),
+    getMenuItems: () => api.get('/menu') // for product dropdown
+};
+
