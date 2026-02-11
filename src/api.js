@@ -174,3 +174,15 @@ export const rewardAPI = {
     getMenuItems: () => api.get('/menu') // for product dropdown
 };
 
+// =============================================
+// BANNER API
+// =============================================
+export const bannerAPI = {
+    getAll: () => api.get('/banners/admin'),
+    getActive: () => api.get('/banners'),
+    create: (formData) => api.post('/banners', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    update: (id, formData) => api.put(`/banners/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    delete: (id) => api.delete(`/banners/${id}`),
+    toggle: (id) => api.patch(`/banners/${id}/toggle`)
+};
+

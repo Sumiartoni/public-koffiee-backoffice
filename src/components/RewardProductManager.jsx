@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, Plus, Trash2, Edit3, X, Loader, Award, Star, Users, Package, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Gift, Plus, Trash2, Edit3, X, Loader, Award, Star, Users, Package, ToggleLeft, ToggleRight, Check } from 'lucide-react';
 import { rewardAPI } from '../api';
 import { formatCurrency } from '../config';
 
@@ -8,7 +8,8 @@ export default function RewardProductManager() {
     const [rewards, setRewards] = useState([]);
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [modal, setModal] = useState(null); // { mode: 'add'|'edit', data: {} }
+    const [modal, setModal] = useState(null);
+    const [selectedProducts, setSelectedProducts] = useState([]);
 
     useEffect(() => { fetchData(); }, []);
 
@@ -40,12 +41,30 @@ export default function RewardProductManager() {
         } catch (e) { alert('Gagal mengubah status'); }
     };
 
+    const openModal = (mode, data = {}) => {
+        setSelectedProducts(data.product_ids || []);
+        setModal({ mode, data });
+    };
+
+    const toggleProduct = (productId) => {
+        setSelectedProducts(prev =>
+            prev.includes(productId)
+                ? prev.filter(id => id !== productId)
+                : [...prev, productId]
+        );
+    };
+
     const handleSave = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
-        // Clean up empty values
+        if (selectedProducts.length === 0) {
+            alert('Pilih minimal 1 produk');
+            return;
+        }
+
+        data.product_ids = selectedProducts;
         if (!data.points_required) data.points_required = null;
         if (!data.referral_required) data.referral_required = null;
         if (!data.quota) data.quota = null;
@@ -65,7 +84,7 @@ export default function RewardProductManager() {
     const getRewardType = (r) => {
         if (r.points_required) return { label: `${r.points_required} Poin`, icon: <Star size={14} />, color: 'amber' };
         if (r.referral_required) return { label: `${r.referral_required} Referral`, icon: <Users size={14} />, color: 'violet' };
-        return { label: 'Tidak dikonfigurasi', icon: <Package size={14} />, color: 'slate' };
+        return { label: 'Belum dikonfigurasi', icon: <Package size={14} />, color: 'slate' };
     };
 
     return (
@@ -76,7 +95,7 @@ export default function RewardProductManager() {
                     <p className="text-[10px] text-orange-500 font-bold uppercase tracking-[0.4em] mt-2">Atur Hadiah Produk Gratis untuk Point & Referral</p>
                 </div>
                 <button
-                    onClick={() => setModal({ mode: 'add', data: {} })}
+                    onClick={() => openModal('add')}
                     className="flex items-center gap-3 bg-orange-600 hover:bg-orange-500 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-2xl shadow-orange-900/20 active:scale-95"
                 >
                     <Plus size={16} /> Tambah Reward
@@ -101,24 +120,36 @@ export default function RewardProductManager() {
                         return (
                             <div key={r.id} className="group relative bg-slate-900/40 border border-slate-800 rounded-[2.5rem] p-8 hover:border-orange-500/40 transition-all shadow-xl overflow-hidden flex flex-col h-full">
                                 <div className="flex justify-between items-start mb-6">
-                                    <div className={`w-14 h-14 bg-${rType.color}-500/10 rounded-2xl flex items-center justify-center text-${rType.color}-500 border border-${rType.color}-500/20 group-hover:scale-110 transition-transform`}>
+                                    <div className="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 border border-orange-500/20 group-hover:scale-110 transition-transform">
                                         <Gift size={24} />
                                     </div>
                                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button onClick={() => handleToggle(r.id)} className={`p-3 rounded-xl transition-all ${r.is_active ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20' : 'bg-slate-800 text-slate-500 hover:bg-slate-700'}`}>
                                             {r.is_active ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
                                         </button>
-                                        <button onClick={() => setModal({ mode: 'edit', data: r })} className="p-3 bg-slate-800 hover:bg-orange-600 rounded-xl text-slate-300 hover:text-white transition-all"><Edit3 size={14} /></button>
+                                        <button onClick={() => openModal('edit', r)} className="p-3 bg-slate-800 hover:bg-orange-600 rounded-xl text-slate-300 hover:text-white transition-all"><Edit3 size={14} /></button>
                                         <button onClick={() => handleDelete(r.id)} className="p-3 bg-slate-800 hover:bg-red-600 rounded-xl text-slate-300 hover:text-white transition-all"><Trash2 size={14} /></button>
                                     </div>
                                 </div>
 
                                 <h3 className="text-xl font-black italic uppercase mb-2 group-hover:text-orange-500 transition-colors line-clamp-1">{r.title}</h3>
-                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wide">
-                                    Produk: <span className="text-slate-300">{r.product_name || 'Produk dihapus'}</span>
-                                </p>
 
-                                <div className="mt-6 space-y-3 flex-1">
+                                {/* Product list */}
+                                <div className="mb-4">
+                                    <p className="text-[9px] text-slate-600 font-black uppercase tracking-widest mb-2">Produk Reward:</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {(r.products || []).map(p => (
+                                            <span key={p.product_id} className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-[10px] font-bold text-slate-300">
+                                                {p.product_name}
+                                            </span>
+                                        ))}
+                                        {(!r.products || r.products.length === 0) && (
+                                            <span className="text-[10px] text-slate-600 italic">Belum ada produk</span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="mt-auto space-y-3">
                                     <div className="bg-slate-950/60 p-5 rounded-xl border border-slate-800 flex items-center justify-between">
                                         <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Syarat Tukar</span>
                                         <span className="flex items-center gap-2 text-xs font-bold text-white">
@@ -126,15 +157,9 @@ export default function RewardProductManager() {
                                         </span>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center">
-                                            <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1">Harga Produk</p>
-                                            <p className="text-sm font-black text-amber-500">{r.product_price ? formatCurrency(r.product_price) : '-'}</p>
-                                        </div>
-                                        <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center">
-                                            <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1">Kuota</p>
-                                            <p className="text-sm font-black text-white">{r.quota != null ? r.quota : '∞'}</p>
-                                        </div>
+                                    <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center">
+                                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1">Kuota</p>
+                                        <p className="text-sm font-black text-white">{r.quota != null ? r.quota : '∞'}</p>
                                     </div>
                                 </div>
 
@@ -168,27 +193,45 @@ export default function RewardProductManager() {
                             <form onSubmit={handleSave} className="space-y-8 flex-1 overflow-y-auto pr-4 custom-scroll">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nama Reward</label>
-                                    <input name="title" defaultValue={modal.data.title} required className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-xs font-bold focus:border-orange-500 outline-none transition-all" placeholder="Contoh: Free Tea / Free Americano" />
+                                    <input name="title" defaultValue={modal.data.title} required className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-xs font-bold focus:border-orange-500 outline-none transition-all" placeholder="Contoh: Free Drink Pilihan" />
                                 </div>
 
+                                {/* Multi-select products */}
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Pilih Produk</label>
-                                    <select name="product_id" defaultValue={modal.data.product_id} required className="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl text-xs font-bold focus:border-orange-500 outline-none appearance-none cursor-pointer">
-                                        <option value="">Pilih Menu...</option>
-                                        {menuItems.map(m => <option key={m.id} value={m.id}>{m.name} - {formatCurrency(m.price)}</option>)}
-                                    </select>
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                                        Pilih Produk Reward <span className="text-orange-500">({selectedProducts.length} dipilih)</span>
+                                    </label>
+                                    <div className="p-4 bg-slate-950/50 rounded-[2rem] border border-slate-800/60 max-h-60 overflow-y-auto custom-scroll space-y-1">
+                                        {menuItems.map(m => {
+                                            const isSelected = selectedProducts.includes(m.id);
+                                            return (
+                                                <button
+                                                    key={m.id}
+                                                    type="button"
+                                                    onClick={() => toggleProduct(m.id)}
+                                                    className={`w-full flex items-center justify-between p-3 rounded-xl text-xs font-bold transition-all ${isSelected ? 'bg-orange-600/20 border border-orange-500/30 text-orange-400' : 'bg-slate-900/40 border border-transparent text-slate-400 hover:bg-slate-800'}`}
+                                                >
+                                                    <span className="flex items-center gap-3">
+                                                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isSelected ? 'border-orange-500 bg-orange-500' : 'border-slate-700'}`}>
+                                                            {isSelected && <Check size={12} className="text-white" />}
+                                                        </div>
+                                                        {m.name}
+                                                    </span>
+                                                    <span className="text-[10px] text-slate-600">{formatCurrency(m.price)}</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
 
                                 <div className="p-8 bg-slate-950/50 rounded-[2rem] border border-slate-800/60 space-y-6">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Syarat Penukaran <span className="text-slate-600">(isi salah satu)</span></p>
-
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <label className="text-[9px] font-black text-amber-500 uppercase flex items-center gap-2"><Star size={12} /> Poin yang Dibutuhkan</label>
                                             <input type="number" name="points_required" defaultValue={modal.data.points_required} min="1" className="w-full bg-slate-900 border border-slate-800 p-4 rounded-xl text-xs font-bold outline-none focus:border-amber-500 transition-all" placeholder="Contoh: 10" />
                                             <p className="text-[8px] text-slate-600 ml-1">Untuk reward via sistem point</p>
                                         </div>
-
                                         <div className="space-y-2">
                                             <label className="text-[9px] font-black text-violet-500 uppercase flex items-center gap-2"><Users size={12} /> Jumlah Referral</label>
                                             <input type="number" name="referral_required" defaultValue={modal.data.referral_required} min="1" className="w-full bg-slate-900 border border-slate-800 p-4 rounded-xl text-xs font-bold outline-none focus:border-violet-500 transition-all" placeholder="Contoh: 10" />
