@@ -175,6 +175,17 @@ export const rewardAPI = {
 };
 
 // =============================================
+// CUSTOMER VOUCHER API (NEW)
+// =============================================
+export const customerVoucherAPI = {
+    getAll: () => api.get('/customer-vouchers'),
+    create: (data) => api.post('/customer-vouchers', data),
+    update: (id, data) => api.put(`/customer-vouchers/${id}`, data),
+    delete: (id) => api.delete(`/customer-vouchers/${id}`),
+    toggle: (id) => api.patch(`/customer-vouchers/${id}/toggle`) // Assuming backend has toggle, otherwise I rely on update
+};
+
+// =============================================
 // BANNER API
 // =============================================
 export const bannerAPI = {
