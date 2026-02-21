@@ -38,22 +38,31 @@ export default function NewUserVoucherManager() {
         e.preventDefault();
         setSaving(true);
         const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
+        const rawData = Object.fromEntries(formData.entries());
 
-        // Prepare data
-        data.category = 'new_user';
-        data.value = Number(data.value);
-        data.min_purchase = Number(data.min_purchase) || 0;
-        data.max_discount = data.max_discount ? Number(data.max_discount) : null;
-        data.quota = data.quota ? Number(data.quota) : null;
-        data.validity_days = Number(data.validity_days) || 30;
-        data.is_active = true; // Always active when saving via this manager (as per requirement)
+        // Explicit Payload Construction to prevent null values
+        const payload = {
+            title: rawData.title,
+            description: rawData.description,
+            category: 'new_user', // HARDCODED
+            type: rawData.type,
+            value: Number(rawData.value),
+            min_purchase: Number(rawData.min_purchase) || 0,
+            max_discount: rawData.max_discount ? Number(rawData.max_discount) : null,
+            quota: rawData.quota ? Number(rawData.quota) : null,
+            validity_days: Number(rawData.validity_days) || 30,
+            is_active: true,
+            start_date: null,
+            end_date: null
+        };
+
+        console.log("Saving Payload:", payload);
 
         try {
             if (voucher && voucher.id) {
-                await customerVoucherAPI.update(voucher.id, data);
+                await customerVoucherAPI.update(voucher.id, payload);
             } else {
-                await customerVoucherAPI.create(data);
+                await customerVoucherAPI.create(payload);
             }
             setIsEditing(false);
             fetchData();
