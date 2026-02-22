@@ -15,7 +15,8 @@ export default function CustomerVouchersManager() {
         setLoading(true);
         try {
             const res = await customerVoucherAPI.getAll();
-            setVouchers(res.data);
+            // Filter out new_user vouchers — those are managed in NewUserVoucherManager
+            setVouchers(res.data.filter(v => v.category !== 'new_user'));
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
     };
@@ -56,6 +57,7 @@ export default function CustomerVouchersManager() {
         data.max_discount = data.max_discount ? Number(data.max_discount) : null;
         data.quota = data.quota ? Number(data.quota) : null;
         data.validity_days = Number(data.validity_days) || 0;
+        data.category = data.category || 'general'; // Ensure category is always set
 
         try {
             if (modal.mode === 'add') {
