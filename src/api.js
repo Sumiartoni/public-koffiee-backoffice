@@ -215,3 +215,11 @@ export const notificationAPI = {
     delete: (id) => api.delete(`/notifications/${id}`)
 };
 
+// =============================================
+// LOYALTY API
+// =============================================
+export const loyaltyAPI = {
+    getSettings: () => api.get('/loyalty/settings'),
+    updateSettings: (data) => api.put('/loyalty/settings', data),
+};
+

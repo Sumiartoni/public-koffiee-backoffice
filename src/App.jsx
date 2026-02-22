@@ -20,6 +20,7 @@ import CustomerVouchersManager from './components/CustomerVouchersManager';
 import BannerManager from './components/BannerManager';
 import NotificationManager from './components/NotificationManager';
 import NewUserVoucherManager from './components/NewUserVoucherManager';
+import LoyaltySettingsManager from './components/LoyaltySettingsManager';
 // import ReferralManager from './components/ReferralManager';
 import { SOCKET_URL } from './config';
 
@@ -222,6 +223,7 @@ export default function UltimateBackoffice() {
                     <NavItem icon={<Package size={20} />} label="Reward Produk" active={view === 'rewards'} onClick={() => { setView('rewards'); setSidebarOpen(false); }} />
                     <NavItem icon={<Monitor size={20} />} label="Banner Aplikasi" active={view === 'banners'} onClick={() => { setView('banners'); setSidebarOpen(false); }} />
                     <NavItem icon={<Bell size={20} />} label="Notifikasi" active={view === 'notifications'} onClick={() => { setView('notifications'); setSidebarOpen(false); }} />
+                    <NavItem icon={<Settings size={20} />} label="Pengaturan Point" active={view === 'loyalty-settings'} onClick={() => { setView('loyalty-settings'); setSidebarOpen(false); }} />
 
                     <NavItem icon={<Gift size={20} />} label="Promo & Diskon" active={view === 'promos'} onClick={() => { setView('promos'); setSidebarOpen(false); }} />
                     <NavItem icon={<TrendingUp size={20} />} label="Laporan Penjualan" active={view === 'reports'} onClick={() => { setView('reports'); setSidebarOpen(false); }} />
@@ -333,6 +335,7 @@ export default function UltimateBackoffice() {
                         {view === 'rewards' && <RewardProductManager menu={fullMenu} />}
                         {view === 'banners' && <BannerManager />}
                         {view === 'notifications' && <NotificationManager />}
+                        {view === 'loyalty-settings' && <LoyaltySettingsManager />}
                         {view === 'extras' && <ExtrasManager menu={fullMenu} />}
                         {view === 'reports' && <AdvancedReportingView adv={advancedReport} brk={breakdownData} brkType={breakdownType} setBrkType={setBreakdownType} customers={customers} variants={variants} range={reportRange} setRange={setReportRange} onRefresh={refreshGlobalData} />}
                         {view === 'mobile-app' && <MobileDownloadView />}
