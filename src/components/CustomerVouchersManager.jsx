@@ -71,8 +71,8 @@ export default function CustomerVouchersManager() {
 
     const getVoucherTypeIcon = (type) => {
         switch (type) {
-            case 'discount_amount': return <DollarSign size={14} />;
-            case 'discount_percent': return <Percent size={14} />;
+            case 'nominal': return <DollarSign size={14} />;
+            case 'percent': return <Percent size={14} />;
             default: return <Tag size={14} />;
         }
     };
@@ -85,7 +85,7 @@ export default function CustomerVouchersManager() {
                     <p className="text-[10px] text-orange-500 font-bold uppercase tracking-[0.4em] mt-2">Kelola Voucher Diskon & Promosi</p>
                 </div>
                 <button
-                    onClick={() => setModal({ mode: 'add', data: { type: 'discount_amount', validity_days: 7 } })}
+                    onClick={() => setModal({ mode: 'add', data: { type: 'nominal', validity_days: 7 } })}
                     className="flex items-center gap-3 bg-orange-600 hover:bg-orange-500 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-2xl shadow-orange-900/20 active:scale-95"
                 >
                     <Plus size={16} /> Buat Voucher
@@ -129,7 +129,7 @@ export default function CustomerVouchersManager() {
                                 <div className="flex items-center justify-between text-xs py-2 border-b border-slate-800/50">
                                     <span className="text-slate-600 font-bold uppercase tracking-wider text-[9px]">Nilai Voucher</span>
                                     <span className="font-black text-white flex gap-1 items-center">
-                                        {v.type === 'discount_amount' ? formatCurrency(v.value) : `${v.value}%`}
+                                        {v.type === 'nominal' ? formatCurrency(v.value) : `${v.value}%`}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between text-xs py-2 border-b border-slate-800/50">
@@ -182,9 +182,9 @@ export default function CustomerVouchersManager() {
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Tipe Potongan</label>
-                                        <select name="type" defaultValue={modal.data.type || 'discount_amount'} className="w-full bg-slate-900 border border-slate-800 p-4 rounded-xl text-xs font-bold outline-none focus:border-orange-500 appearance-none cursor-pointer">
-                                            <option value="discount_amount">Potongan Harga (Rp)</option>
-                                            <option value="discount_percent">Potongan Persen (%)</option>
+                                        <select name="type" defaultValue={modal.data.type || 'nominal'} className="w-full bg-slate-900 border border-slate-800 p-4 rounded-xl text-xs font-bold outline-none focus:border-orange-500 appearance-none cursor-pointer">
+                                            <option value="nominal">Potongan Harga (Rp)</option>
+                                            <option value="percent">Potongan Persen (%)</option>
                                         </select>
                                     </div>
                                     <div className="space-y-2">

@@ -134,7 +134,7 @@ export default function NewUserVoucherManager() {
                                 <div className="flex justify-between items-center bg-slate-800/50 p-4 rounded-2xl">
                                     <span className="text-[10px] font-black text-slate-400 uppercase">Nilai Diskon</span>
                                     <span className="text-xl font-black text-white flex items-center gap-1">
-                                        {voucher?.type === 'discount_amount' ? formatCurrency(voucher?.value || 0) : `${voucher?.value || 0}%`}
+                                        {voucher?.type === 'nominal' ? formatCurrency(voucher?.value || 0) : `${voucher?.value || 0}%`}
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
@@ -194,9 +194,9 @@ export default function NewUserVoucherManager() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Tipe</label>
-                                        <select name="type" defaultValue={voucher?.type || 'discount_amount'} className="w-full bg-slate-950 border border-slate-800 p-4 rounded-2xl text-xs font-bold focus:border-orange-500 outline-none appearance-none">
-                                            <option value="discount_amount">Potongan Harga (Rp)</option>
-                                            <option value="discount_percent">Potongan Persen (%)</option>
+                                        <select name="type" defaultValue={voucher?.type || 'nominal'} className="w-full bg-slate-950 border border-slate-800 p-4 rounded-2xl text-xs font-bold focus:border-orange-500 outline-none appearance-none">
+                                            <option value="nominal">Potongan Harga (Rp)</option>
+                                            <option value="percent">Potongan Persen (%)</option>
                                         </select>
                                     </div>
                                     <div className="space-y-2">
