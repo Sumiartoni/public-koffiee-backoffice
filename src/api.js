@@ -152,12 +152,20 @@ export const promoAPI = {
 // EXTRA API
 // =============================================
 export const extraAPI = {
-    getAll: () => api.get('/extras'),
+    // Categories
+    getCategories: () => api.get('/extras/categories'),
+    createCategory: (data) => api.post('/extras/categories', data),
+    updateCategory: (id, data) => api.put(`/extras/categories/${id}`, data),
+    deleteCategory: (id) => api.delete(`/extras/categories/${id}`),
+    // Extras
+    getAll: (categoryId) => api.get('/extras', categoryId ? { params: { category_id: categoryId } } : {}),
     create: (data) => api.post('/extras', data),
     update: (id, data) => api.put(`/extras/${id}`, data),
     delete: (id) => api.delete(`/extras/${id}`),
-    linkToMenuItem: (menuItemId, extraIds) => api.post(`/extras/menu-item/${menuItemId}`, { extraIds }),
-    getByMenuItem: (menuItemId) => api.get(`/extras/menu-item/${menuItemId}`)
+    // Link categories to menu items
+    getByMenuItem: (menuItemId) => api.get(`/extras/menu-item/${menuItemId}`),
+    getCategoryIdsByMenuItem: (menuItemId) => api.get(`/extras/menu-item/${menuItemId}/category-ids`),
+    linkCategoriesToMenuItem: (menuItemId, categoryIds) => api.post(`/extras/menu-item/${menuItemId}`, { categoryIds })
 };
 
 export default api;
