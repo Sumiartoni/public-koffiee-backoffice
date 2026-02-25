@@ -68,12 +68,10 @@ export default function UltimateBackoffice() {
     const initializeApp = async () => {
         setLoading(true);
         try {
-            // Token validation logic simulation
             const uRes = await authAPI.getMe();
             setUserProfile(uRes.data.user);
             setupSocket();
-            // Start fetching data but don't block the shell initialization
-            refreshGlobalData();
+            refreshCoreData(); // Only load essential data on startup
         } catch (e) {
             console.error("Sesi Berakhir", e);
             handleLogout();
@@ -84,11 +82,12 @@ export default function UltimateBackoffice() {
     };
 
     const setupSocket = () => {
-        const socket = io(SOCKET_URL);
-        socket.on('new-order', (o) => {
-            refreshGlobalData();
+        const socket = io(SOCKET_URL, {
+            reconnectionDelay: 2000,
+            reconnectionAttempts: 5,
         });
-        socket.on('order-updated', () => refreshGlobalData());
+        socket.on('new-order', () => refreshCoreData());
+        socket.on('order-updated', () => refreshCoreData());
         return () => socket.disconnect();
     };
 
@@ -98,40 +97,53 @@ export default function UltimateBackoffice() {
         return () => clearInterval(timer);
     }, []);
 
-    const refreshGlobalData = async () => {
+    // Lazy-load heavy report data only when navigating to reports
+    useEffect(() => {
+        if (view === 'reports' && token) {
+            refreshReportData();
+        }
+    }, [view]);
+
+    // Core data - loads fast, called on init and socket events
+    const refreshCoreData = async () => {
         try {
             const [dRes, mRes, cRes, oRes] = await Promise.all([
-                reportAPI.getDashboard().catch(e => ({ data: stats })),
-                menuAPI.getAdminAll().catch(e => ({ data: { items: fullMenu } })),
-                menuAPI.getCategories().catch(e => ({ data: { categories: [] } })),
-                orderAPI.getAll().catch(e => ({ data: { orders: [] } }))
+                reportAPI.getDashboard().catch(() => ({ data: stats })),
+                menuAPI.getAdminAll().catch(() => ({ data: { items: fullMenu } })),
+                menuAPI.getCategories().catch(() => ({ data: { categories: [] } })),
+                orderAPI.getAll().catch(() => ({ data: { orders: [] } }))
             ]);
-
             setStats(dRes.data);
             setFullMenu(mRes.data.items);
             setCategories(cRes.data.categories);
             setActiveOrders(oRes.data.orders);
-
-            // Advanced Reports - Handled individually to prevent total lock
-            reportAPI.getAdvanced(reportRange.start, reportRange.end)
-                .then(res => setAdvancedReport(res.data))
-                .catch(e => console.error("Advanced Report Error", e));
-
-            reportAPI.getBreakdown(breakdownType, reportRange.start, reportRange.end)
-                .then(res => setBreakdownData(res.data.data))
-                .catch(e => console.error("Breakdown Error", e));
-
-            reportAPI.getCustomers()
-                .then(res => setCustomers(res.data.customers))
-                .catch(e => console.error("Customers Error", e));
-
-            reportAPI.getVariants(reportRange.start, reportRange.end)
-                .then(res => setVariants(res.data.variants))
-                .catch(e => console.error("Variants Error", e));
-
         } catch (err) {
-            console.error("Gagal Sinkronisasi Data", err);
+            console.error('Gagal Sinkronisasi Data Core', err);
         }
+    };
+
+    // Heavy report data - only loaded when Reports view is opened
+    const refreshReportData = async () => {
+        try {
+            const [advRes, brkRes, custRes, varRes] = await Promise.all([
+                reportAPI.getAdvanced(reportRange.start, reportRange.end).catch(() => ({ data: null })),
+                reportAPI.getBreakdown(breakdownType, reportRange.start, reportRange.end).catch(() => ({ data: { data: [] } })),
+                reportAPI.getCustomers().catch(() => ({ data: { customers: [] } })),
+                reportAPI.getVariants(reportRange.start, reportRange.end).catch(() => ({ data: { variants: [] } }))
+            ]);
+            if (advRes.data) setAdvancedReport(advRes.data);
+            setBreakdownData(brkRes.data.data || []);
+            setCustomers(custRes.data.customers || []);
+            setVariants(varRes.data.variants || []);
+        } catch (err) {
+            console.error('Gagal load laporan', err);
+        }
+    };
+
+    // Combined refresh (for manual refresh button)
+    const refreshGlobalData = async () => {
+        await refreshCoreData();
+        if (view === 'reports') await refreshReportData();
     };
 
     const handleUpdateStatus = async (id, status) => {
