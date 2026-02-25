@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LayoutDashboard, ShoppingBag, UtensilsCrossed, TrendingUp, Settings, LogOut, Bell, CheckCircle,
-    User, Mail, Phone, Lock, Key, ShieldCheck, Loader2, Plus, Edit, Trash2, Camera, Download, Filter,
+    User, Users, Mail, Phone, Lock, Key, ShieldCheck, Loader2, Plus, Edit, Trash2, Camera, Download, Filter,
     ChevronDown, ChevronLeft, ChevronRight, Monitor, Package, Clock, DollarSign, Tag, Smartphone, MapPin, Receipt, Database, Info, Gift, Calendar as CalendarIcon, X, Layers
 } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, ArcElement } from 'chart.js';
