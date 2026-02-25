@@ -18,6 +18,8 @@ export const ORDER_STATUSES = {
     ready: { label: 'Siap', color: 'emerald' },
     served: { label: 'Disajikan', color: 'emerald' },
     completed: { label: 'Selesai', color: 'emerald' },
+    picked_up: { label: 'Diambil', color: 'emerald' },
+    processing: { label: 'Diproses', color: 'sky' },
     cancelled: { label: 'Dibatalkan', color: 'red' }
 };
 
