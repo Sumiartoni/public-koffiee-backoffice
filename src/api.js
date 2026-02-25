@@ -223,3 +223,9 @@ export const loyaltyAPI = {
     updateSettings: (data) => api.put('/loyalty/settings', data),
 };
 
+// =============================================
+// CUSTOMER USERS API
+// =============================================
+export const customerUsersAPI = {
+    getAll: () => api.get('/auth/customers'),
+};
